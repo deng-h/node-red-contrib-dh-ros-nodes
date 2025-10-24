@@ -1,4 +1,69 @@
 <script type="text/javascript">
+    // Shared function to populate ROS type datalists
+    (function() {
+        var messageTypesLoaded = false;
+        var serviceTypesLoaded = false;
+        var actionTypesLoaded = false;
+
+        // Load message types for ros-publish node
+        function loadMessageTypes() {
+            if (messageTypesLoaded) return;
+            
+            $.getJSON('ros/message-types', function(data) {
+                var datalist = $('#ros-message-types');
+                if (datalist.length && datalist.children().length === 0) {
+                    data.types.forEach(function(type) {
+                        datalist.append($('<option>').attr('value', type));
+                    });
+                    messageTypesLoaded = true;
+                }
+            }).fail(function() {
+                console.warn('Failed to load ROS message types');
+            });
+        }
+
+        // Load service types for service nodes
+        function loadServiceTypes() {
+            if (serviceTypesLoaded) return;
+            
+            $.getJSON('ros/service-types', function(data) {
+                var datalist = $('#ros-service-types');
+                if (datalist.length && datalist.children().length === 0) {
+                    data.types.forEach(function(type) {
+                        datalist.append($('<option>').attr('value', type));
+                    });
+                    serviceTypesLoaded = true;
+                }
+            }).fail(function() {
+                console.warn('Failed to load ROS service types');
+            });
+        }
+
+        // Load action types for action client node
+        function loadActionTypes() {
+            if (actionTypesLoaded) return;
+            
+            $.getJSON('ros/action-types', function(data) {
+                var datalist = $('#ros-action-types');
+                if (datalist.length && datalist.children().length === 0) {
+                    data.types.forEach(function(type) {
+                        datalist.append($('<option>').attr('value', type));
+                    });
+                    actionTypesLoaded = true;
+                }
+            }).fail(function() {
+                console.warn('Failed to load ROS action types');
+            });
+        }
+
+        // Expose functions globally for nodes to use
+        window.loadRosMessageTypes = loadMessageTypes;
+        window.loadRosServiceTypes = loadServiceTypes;
+        window.loadRosActionTypes = loadActionTypes;
+    })();
+</script>
+
+<script type="text/javascript">
     RED.nodes.registerType('ros-subscribe', {
         category: 'ros',
         color: '#fef5ff',
@@ -43,6 +108,10 @@
         icon: "icon.png",
         label: function () {
             return this.topicname || "ros publish";
+        },
+        oneditprepare: function() {
+            // Load message types when edit dialog opens
+            window.loadRosMessageTypes();
         }
     });
 </script>
@@ -58,8 +127,8 @@
     </div>
     <div class="form-row">
         <label for="node-input-msgtype"><i class="fa fa-dot-circle-o"></i> Type</label>
-
-        <input type="text" id="node-input-msgtype" placeholder="package/Type">
+        <input type="text" id="node-input-msgtype" list="ros-message-types" placeholder="package/Type">
+        <datalist id="ros-message-types"></datalist>
     </div>
 </script>
 
@@ -80,6 +149,10 @@
         icon: "icon.png",
         label: function () {
             return this.servicename || "ros service";
+        },
+        oneditprepare: function() {
+            // Load service types when edit dialog opens
+            window.loadRosServiceTypes();
         }
     });
 </script>
@@ -95,7 +168,8 @@
     </div>
     <div class="form-row">
         <label for="node-input-srvtype"><i class="icon-tag"></i> Type</label>
-        <input type="text" id="node-input-srvtype" placeholder="/myservicetype">
+        <input type="text" id="node-input-srvtype" list="ros-service-types" placeholder="/myservicetype">
+        <datalist id="ros-service-types"></datalist>
     </div>
 </script>
 
@@ -116,6 +190,10 @@
         icon: "icon.png",
         label: function () {
             return this.servicename || "ros adv_service";
+        },
+        oneditprepare: function() {
+            // Load service types when edit dialog opens
+            window.loadRosServiceTypes();
         }
     });
 </script>
@@ -131,7 +209,8 @@
     </div>
     <div class="form-row">
         <label for="node-input-srvtype"><i class="icon-tag"></i> Type</label>
-        <input type="text" id="node-input-srvtype" placeholder="/myservicetype">
+        <input type="text" id="node-input-srvtype" list="ros-service-types" placeholder="/myservicetype">
+        <datalist id="ros-service-types"></datalist>
     </div>
 </script>
 
@@ -152,6 +231,10 @@
         icon: "icon.png",
         label: function () {
             return this.servicename || "ros service";
+        },
+        oneditprepare: function() {
+            // Load service types when edit dialog opens
+            window.loadRosServiceTypes();
         }
     });
 </script>
@@ -167,7 +250,8 @@
     </div>
     <div class="form-row">
         <label for="node-input-srvtype"><i class="icon-tag"></i> Type</label>
-        <input type="text" id="node-input-srvtype" placeholder="/myservicetype">
+        <input type="text" id="node-input-srvtype" list="ros-service-types" placeholder="/myservicetype">
+        <datalist id="ros-service-types"></datalist>
     </div>
 </script>
 
@@ -210,6 +294,10 @@
         icon: "icon.png",
         label: function () {
             return this.servicename || "ros action client";
+        },
+        oneditprepare: function() {
+            // Load action types when edit dialog opens
+            window.loadRosActionTypes();
         }
     });
 </script>
@@ -225,6 +313,7 @@
     </div>
     <div class="form-row">
         <label for="node-input-actionname"><i class="icon-tag"></i> Action Type Name</label>
-        <input type="text" id="node-input-actionname" placeholder="myactionname">
+        <input type="text" id="node-input-actionname" list="ros-action-types" placeholder="myactionname">
+        <datalist id="ros-action-types"></datalist>
     </div>
 </script>
