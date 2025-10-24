@@ -1,0 +1,75 @@
+<!-- Auto-generated topic subscribe node UI for {{name}} -->
+<script type="text/javascript">
+    RED.nodes.registerType('{{nodeType}}', {
+        category: '{{category}}',
+        color: '#E6FFE6',
+        defaults: {
+            server: { type: "ros-server" },
+            name: { value: "" }
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "icon.png",
+        label: function () {
+            return this.name || "{{label}}";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="{{nodeType}}">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> ROS Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="{{label}}">
+    </div>
+    <div class="form-row">
+        <label><i class="fa fa-info-circle"></i> Topic</label>
+        <span style="margin-left: 5px;">{{name}}</span>
+    </div>
+    <div class="form-row">
+        <label><i class="fa fa-cube"></i> Type</label>
+        <span style="margin-left: 5px;">{{type}}</span>
+    </div>
+    {{#if throttle_rate}}
+    <div class="form-row">
+        <label><i class="fa fa-tachometer"></i> Rate</label>
+        <span style="margin-left: 5px;">{{throttle_rate}} Hz</span>
+    </div>
+    {{/if}}
+    {{#if note}}
+    <div class="form-row">
+        <label><i class="fa fa-comment"></i> Note</label>
+        <div style="margin-left: 110px; color: #666;">{{note}}</div>
+    </div>
+    {{/if}}
+</script>
+
+<script type="text/x-red" data-help-name="{{nodeType}}">
+    <p><strong>{{description}}</strong></p>
+    <h3>话题信息</h3>
+    <dl class="message-properties">
+        <dt>话题名称</dt>
+        <dd><code>{{name}}</code></dd>
+        <dt>消息类型</dt>
+        <dd><code>{{type}}</code></dd>
+        {{#if category}}
+        <dt>类别</dt>
+        <dd>{{category}}</dd>
+        {{/if}}
+        {{#if throttle_rate}}
+        <dt>订阅频率</dt>
+        <dd>{{throttle_rate}} Hz</dd>
+        {{/if}}
+    </dl>
+    
+    <h3>输出</h3>
+    <p>订阅到的消息数据通过 <code>msg.payload</code> 输出。</p>
+    
+    {{#if note}}
+    <h3>说明</h3>
+    <p>{{note}}</p>
+    {{/if}}
+</script>

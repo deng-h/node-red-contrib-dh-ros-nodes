@@ -1,0 +1,72 @@
+<!-- Auto-generated service call node UI for {{name}} -->
+<script type="text/javascript">
+    RED.nodes.registerType('{{nodeType}}', {
+        category: '{{category}}',
+        color: '#E6F2FF',
+        defaults: {
+            server: { type: "ros-server" },
+            name: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icon.png",
+        label: function () {
+            return this.name || "{{label}}";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="{{nodeType}}">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> ROS Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="{{label}}">
+    </div>
+    <div class="form-row">
+        <label><i class="fa fa-info-circle"></i> Service</label>
+        <span style="margin-left: 5px;">{{name}}</span>
+    </div>
+    <div class="form-row">
+        <label><i class="fa fa-cube"></i> Type</label>
+        <span style="margin-left: 5px;">{{type}}</span>
+    </div>
+    {{#if note}}
+    <div class="form-row">
+        <label><i class="fa fa-comment"></i> Note</label>
+        <div style="margin-left: 110px; color: #666;">{{note}}</div>
+    </div>
+    {{/if}}
+</script>
+
+<script type="text/x-red" data-help-name="{{nodeType}}">
+    <p><strong>{{description}}</strong></p>
+    <h3>服务信息</h3>
+    <dl class="message-properties">
+        <dt>服务名称</dt>
+        <dd><code>{{name}}</code></dd>
+        <dt>消息类型</dt>
+        <dd><code>{{type}}</code></dd>
+        <dt>类别</dt>
+        <dd>{{category}}</dd>
+    </dl>
+    
+    <h3>输入</h3>
+    <p>通过 <code>msg.payload</code> 传入服务请求参数。</p>
+    
+    <h3>输出</h3>
+    <p>服务响应结果通过 <code>msg.payload</code> 输出。</p>
+    
+    {{#if note}}
+    <h3>说明</h3>
+    <p>{{note}}</p>
+    {{/if}}
+    
+    {{#if help}}
+    <hr>
+    <h3>详细文档</h3>
+    {{{help}}}
+    {{/if}}
+</script>

@@ -1,0 +1,21 @@
+{
+  "name": "node-red-contrib-zj-humanoid-nodes",
+  "version": "v1.0.0",
+  "description": "ZJ Humanoid ROS APIs - Services and Topics",
+  "keywords": [
+    "node-red",
+    "ros",
+    "zj-humanoid",
+    "robotics"
+  ],
+  "author": "Auto-generated",
+  "license": "MIT",
+  "node-red": {
+    "nodes": {
+      "zj-humanoid": "zj-humanoid-nodes.js"
+    }
+  },
+  "dependencies": {
+    "roslib": "^1.1.0"
+  }
+}

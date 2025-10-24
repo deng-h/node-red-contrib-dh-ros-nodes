@@ -2,3 +2,5 @@ node_modules
 .vscode
 *.tgz
 dist
+zjh_nodes/generated/nodes/
+zjh_nodes/generated/ui/

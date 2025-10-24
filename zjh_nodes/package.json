@@ -1,0 +1,17 @@
+{
+  "name": "node-red-contrib-zj-humanoid-nodes-generator",
+  "version": "1.0.0",
+  "description": "Generator for ZJ Humanoid ROS Nodes",
+  "main": "generator.js",
+  "scripts": {
+    "generate": "node generator.js"
+  },
+  "keywords": [
+    "node-red",
+    "ros",
+    "zj-humanoid",
+    "generator"
+  ],
+  "author": "Auto-generated",
+  "license": "MIT"
+}
