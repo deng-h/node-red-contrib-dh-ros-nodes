@@ -12,7 +12,8 @@
         icon: "icon.png",
         label: function () {
             return this.name || "{{label}}";
-        }
+        },
+        paletteLabel: "{{label}}"
     });
 </script>
 

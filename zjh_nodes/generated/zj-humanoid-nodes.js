@@ -1,5 +1,5 @@
 // Auto-generated main entry file for ZJ Humanoid ROS Nodes
-// Generated at: 2025-10-24T14:29:07.602Z
+// Generated at: 2025-10-25T01:11:33.547Z
 
 module.exports = function (RED) {
   var Node0 = require('./nodes/zj_humanoid-audio-llm_chat-service.js')(RED);
