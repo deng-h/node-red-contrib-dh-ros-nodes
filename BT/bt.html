@@ -1,0 +1,410 @@
+<!-- 行为树触发器节点 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-trigger', {
+        category: 'behavior tree',
+        color: '#D8BFD8',
+        defaults: {
+            name: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || "BT 触发器";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-trigger">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="触发器名称">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-trigger">
+    <p>触发行为树的执行。</p>
+    <p>接收任何输入消息后，会添加 <code>btControl</code> 属性并启动行为树执行。</p>
+</script>
+
+<!-- 序列节点 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-sequence', {
+        category: 'behavior tree',
+        color: '#87CEEB',
+        defaults: {
+            name: { value: "" },
+            childCount: { value: 2, required: true, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["子节点输出", "结果输出"],
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || "序列节点";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-sequence">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="序列节点">
+    </div>
+    <div class="form-row">
+        <label for="node-input-childCount"><i class="fa fa-list"></i> 子节点数量</label>
+        <input type="number" id="node-input-childCount" min="1" max="10">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-sequence">
+    <p>序列节点：按顺序执行子任务，必须全部成功才算成功。</p>
+    <h3>特点</h3>
+    <ul>
+        <li>按顺序执行每个子节点</li>
+        <li>只有全部子节点都成功，整个序列才成功</li>
+        <li>任何一个子节点失败，立即停止并返回失败</li>
+    </ul>
+    <h3>输出</h3>
+    <dl>
+        <dt>输出1 (子节点输出)</dt>
+        <dd>向子节点发送执行请求</dd>
+        <dt>输出2 (结果输出)</dt>
+        <dd>包含 <code>btResult</code> 的最终结果</dd>
+    </dl>
+</script>
+
+<!-- 回退节点 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-fallback', {
+        category: 'behavior tree',
+        color: '#FFB6C1',
+        defaults: {
+            name: { value: "" },
+            childCount: { value: 2, required: true, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["子节点输出", "结果输出"],
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || "回退节点";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-fallback">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="回退节点">
+    </div>
+    <div class="form-row">
+        <label for="node-input-childCount"><i class="fa fa-list"></i> 子节点数量</label>
+        <input type="number" id="node-input-childCount" min="1" max="10">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-fallback">
+    <p>回退节点（选择器）：按顺序尝试子任务，只要有一个成功就算成功。</p>
+    <h3>特点</h3>
+    <ul>
+        <li>按顺序尝试每个子节点</li>
+        <li>任何一个子节点成功，整个回退节点立即成功</li>
+        <li>只有全部子节点都失败，才返回失败</li>
+    </ul>
+    <h3>输出</h3>
+    <dl>
+        <dt>输出1 (子节点输出)</dt>
+        <dd>向子节点发送执行请求</dd>
+        <dt>输出2 (结果输出)</dt>
+        <dd>包含 <code>btResult</code> 的最终结果</dd>
+    </dl>
+</script>
+
+<!-- 并行节点 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-parallel', {
+        category: 'behavior tree',
+        color: '#98FB98',
+        defaults: {
+            name: { value: "" },
+            childCount: { value: 2, required: true, validate: RED.validators.number() },
+            successPolicy: { value: "all" },
+            successThreshold: { value: 1 }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["子节点输出", "结果输出"],
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || "并行节点";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-parallel">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="并行节点">
+    </div>
+    <div class="form-row">
+        <label for="node-input-childCount"><i class="fa fa-list"></i> 子节点数量</label>
+        <input type="number" id="node-input-childCount" min="1" max="10">
+    </div>
+    <div class="form-row">
+        <label for="node-input-successPolicy"><i class="fa fa-check"></i> 成功策略</label>
+        <select id="node-input-successPolicy">
+            <option value="all">全部成功</option>
+            <option value="any">任意成功</option>
+            <option value="atLeastN">至少N个成功</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-successThreshold"><i class="fa fa-sort-numeric-asc"></i> 成功阈值</label>
+        <input type="number" id="node-input-successThreshold" min="1">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-parallel">
+    <p>并行节点：同时执行多个子任务，根据设定的规则判断整体成功或失败。</p>
+    <h3>特点</h3>
+    <ul>
+        <li>同时启动所有子节点的执行</li>
+        <li>根据成功策略判断最终结果</li>
+        <li>支持提前判断（如某些情况下不需要等待全部完成）</li>
+    </ul>
+    <h3>成功策略</h3>
+    <dl>
+        <dt>全部成功 (all)</dt>
+        <dd>所有子节点都必须成功</dd>
+        <dt>任意成功 (any)</dt>
+        <dd>至少有一个子节点成功即可</dd>
+        <dt>至少N个成功 (atLeastN)</dt>
+        <dd>至少N个子节点成功（N由成功阈值指定）</dd>
+    </dl>
+</script>
+
+<!-- 重复装饰器 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-decorator-repeat', {
+        category: 'behavior tree',
+        color: '#F0E68C',
+        defaults: {
+            name: { value: "" },
+            repeatMode: { value: "fixed" },
+            repeatCount: { value: 3 }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["子节点输出", "结果输出"],
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || "重复装饰器";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-decorator-repeat">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="重复装饰器">
+    </div>
+    <div class="form-row">
+        <label for="node-input-repeatMode"><i class="fa fa-repeat"></i> 重复模式</label>
+        <select id="node-input-repeatMode">
+            <option value="fixed">固定次数</option>
+            <option value="untilFail">直到失败</option>
+            <option value="untilSuccess">直到成功</option>
+            <option value="infinite">无限循环</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-repeatCount"><i class="fa fa-sort-numeric-asc"></i> 重复次数</label>
+        <input type="number" id="node-input-repeatCount" min="1" max="100">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-decorator-repeat">
+    <p>重复装饰器：重复执行子节点指定次数或根据条件重复。</p>
+    <h3>重复模式</h3>
+    <dl>
+        <dt>固定次数 (fixed)</dt>
+        <dd>执行指定次数，最后一次的结果作为整体结果</dd>
+        <dt>直到失败 (untilFail)</dt>
+        <dd>一直执行直到子节点失败</dd>
+        <dt>直到成功 (untilSuccess)</dt>
+        <dd>一直执行直到子节点成功</dd>
+        <dt>无限循环 (infinite)</dt>
+        <dd>永远循环执行（谨慎使用）</dd>
+    </dl>
+</script>
+
+<!-- 取反装饰器 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-decorator-inverter', {
+        category: 'behavior tree',
+        color: '#DDA0DD',
+        defaults: {
+            name: { value: "" }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["子节点输出", "结果输出"],
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || "取反装饰器";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-decorator-inverter">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="取反装饰器">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-decorator-inverter">
+    <p>取反装饰器：反转子节点的执行结果。</p>
+    <h3>特点</h3>
+    <ul>
+        <li>子节点成功 → 返回失败</li>
+        <li>子节点失败 → 返回成功</li>
+    </ul>
+    <h3>用途</h3>
+    <p>在需要"非"逻辑时使用，例如检查某个条件"不满足"时才执行某个动作。</p>
+</script>
+
+<!-- 条件装饰器 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-decorator-condition', {
+        category: 'behavior tree',
+        color: '#FFE4B5',
+        defaults: {
+            name: { value: "" },
+            conditionProperty: { value: "payload.condition" },
+            conditionOperator: { value: "eq" },
+            conditionValue: { value: "" }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["子节点输出", "结果输出"],
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || "条件装饰器";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-decorator-condition">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="条件装饰器">
+    </div>
+    <div class="form-row">
+        <label for="node-input-conditionProperty"><i class="fa fa-code"></i> 条件属性</label>
+        <input type="text" id="node-input-conditionProperty" placeholder="payload.condition">
+    </div>
+    <div class="form-row">
+        <label for="node-input-conditionOperator"><i class="fa fa-arrows-h"></i> 比较运算符</label>
+        <select id="node-input-conditionOperator">
+            <option value="eq">等于 (==)</option>
+            <option value="ne">不等于 (!=)</option>
+            <option value="gt">大于 (>)</option>
+            <option value="lt">小于 (<)</option>
+            <option value="gte">大于等于 (>=)</option>
+            <option value="lte">小于等于 (<=)</option>
+            <option value="exists">存在</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-conditionValue"><i class="fa fa-check-square-o"></i> 比较值</label>
+        <input type="text" id="node-input-conditionValue">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-decorator-condition">
+    <p>条件装饰器：只有满足条件时才执行子节点。</p>
+    <h3>特点</h3>
+    <ul>
+        <li>检查消息中的某个属性值</li>
+        <li>条件满足时执行子节点</li>
+        <li>条件不满足时直接返回失败</li>
+    </ul>
+    <h3>配置</h3>
+    <dl>
+        <dt>条件属性</dt>
+        <dd>要检查的消息属性路径，如 <code>payload.condition</code></dd>
+        <dt>比较运算符</dt>
+        <dd>如何比较属性值与目标值</dd>
+        <dt>比较值</dt>
+        <dd>用于比较的目标值</dd>
+    </dl>
+</script>
+
+<!-- 执行器节点 -->
+<script type="text/javascript">
+    RED.nodes.registerType('bt-action', {
+        category: 'behavior tree',
+        color: '#FFA07A',
+        defaults: {
+            name: { value: "" },
+            actionName: { value: "动作" },
+            actionMode: { value: "passthrough" },
+            delayTime: { value: 1000 }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["动作输出", "结果输出"],
+        icon: "arrow-in.png",
+        label: function () {
+            return this.name || this.actionName || "BT 动作";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="bt-action">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="节点名称">
+    </div>
+    <div class="form-row">
+        <label for="node-input-actionName"><i class="fa fa-cog"></i> 动作名称</label>
+        <input type="text" id="node-input-actionName" placeholder="动作名称">
+    </div>
+    <div class="form-row">
+        <label for="node-input-actionMode"><i class="fa fa-play"></i> 执行模式</label>
+        <select id="node-input-actionMode">
+            <option value="passthrough">转发处理</option>
+            <option value="success">直接成功</option>
+            <option value="fail">直接失败</option>
+            <option value="delay">延迟成功</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-delayTime"><i class="fa fa-clock-o"></i> 延迟时间(ms)</label>
+        <input type="number" id="node-input-delayTime" min="0">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="bt-action">
+    <p>执行器节点：行为树的叶子节点，执行实际的任务。</p>
+    <h3>执行模式</h3>
+    <dl>
+        <dt>转发处理 (passthrough)</dt>
+        <dd>将消息转发到输出1，等待外部处理后返回结果。外部需要在消息中添加 <code>btActionResult</code> 属性</dd>
+        <dt>直接成功 (success)</dt>
+        <dd>立即返回成功结果，用于测试</dd>
+        <dt>直接失败 (fail)</dt>
+        <dd>立即返回失败结果，用于测试</dd>
+        <dt>延迟成功 (delay)</dt>
+        <dd>等待指定时间后返回成功，用于模拟耗时操作</dd>
+    </dl>
+    <h3>输出</h3>
+    <dl>
+        <dt>输出1 (动作输出)</dt>
+        <dd>转发模式下，向此输出发送需要处理的消息</dd>
+        <dt>输出2 (结果输出)</dt>
+        <dd>包含 <code>btResult</code> 的执行结果</dd>
+    </dl>
+</script>
