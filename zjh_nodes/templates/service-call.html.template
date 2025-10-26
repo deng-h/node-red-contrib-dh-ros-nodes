@@ -34,12 +34,11 @@
         <label><i class="fa fa-cube"></i> Type</label>
         <span style="margin-left: 5px;">{{type}}</span>
     </div>
-    {{#if note}}
-    <div class="form-row">
-        <label><i class="fa fa-comment"></i> Note</label>
-        <div style="margin-left: 110px; color: #666;">{{note}}</div>
-    </div>
-    {{/if}}
+    <div class="form-tips">
+        <span>
+            详细信息见右侧帮助文档
+        </span>
+    </div>    
 </script>
 
 <script type="text/x-red" data-help-name="{{nodeType}}">

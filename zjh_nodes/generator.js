@@ -230,7 +230,7 @@ function generatePackageJson(registrations, metadata) {
     version: metadata.version || '1.0.0',
     description: metadata.description || 'ZJ Humanoid ROS Nodes for Node-RED',
     keywords: ['node-red', 'ros', 'zj-humanoid', 'robotics'],
-    author: 'Auto-generated',
+    author: 'denghang',
     license: 'MIT',
     'node-red': {
       nodes: {
@@ -304,9 +304,6 @@ function main() {
     jsonData.services.forEach((service, index) => {
       const reg = generateServiceNode(service, templates);
       registrations.push(reg);
-      if ((index + 1) % 10 === 0) {
-        console.log(`  已生成 ${index + 1}/${jsonData.services.length} 个服务节点...`);
-      }
     });
     console.log(`✓ 完成 ${jsonData.services.length} 个服务节点生成`);
 
@@ -314,13 +311,12 @@ function main() {
     jsonData.topics.forEach((topic, index) => {
       if (topic.direction === 'publish') {
         const reg = generateTopicPubNode(topic, templates);
+        // const reg = generateTopicSubNode(topic, templates);
         registrations.push(reg);
       } else if (topic.direction === 'subscribe') {
         const reg = generateTopicSubNode(topic, templates);
+        // const reg = generateTopicPubNode(topic, templates);
         registrations.push(reg);
-      }
-      if ((index + 1) % 10 === 0) {
-        console.log(`  已生成 ${index + 1}/${jsonData.topics.length} 个话题节点...`);
       }
     });
     console.log(`✓ 完成 ${jsonData.topics.length} 个话题节点生成`);
